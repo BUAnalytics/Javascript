@@ -18,7 +18,7 @@ First make sure to include the library in your html header.
 <script src="node_modules/bu-analytics/dist/browser.min.js"></script>
 ```
 
-The library will then be exported under the BU variable.
+The library will then be exported under the BU variable for use.
 
 ```javascript
 //Authenticate
