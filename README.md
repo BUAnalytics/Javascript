@@ -10,9 +10,7 @@ To install the plugin execute the npm command in your project environment.
 npm i --save bu-analytics
 ```
 
-## Usage
-
-### Browser
+### Browsers
 
 First make sure to include the library in your html header.
 
