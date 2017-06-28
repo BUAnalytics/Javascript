@@ -1,0 +1,21 @@
+{
+  "name": "bu-analytics",
+  "authors": [
+    "Victor Leach"
+  ],
+  "description": "BU Analytics plugin for Javascript and Typescript compatible with browsers and NodeJS.",
+  "main": "dist/browser.min.js",
+  "license": "MIT",
+  "homepage": "https://bu-games.bmth.ac.uk",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "EaselJS": "^0.8.2",
+    "jquery": "^3.2.1"
+  }
+}

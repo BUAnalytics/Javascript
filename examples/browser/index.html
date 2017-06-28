@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Example</title>
+</head>
+<body>
+	<center>
+		<div id="menu">
+			<br>
+			<h2>Reaction Game</h2><br>
+			<input type="text" id="name" placeholder="Name"><br><br>
+			<input type="text" id="age" placeholder="Age"><br><br>
+			<select id="gender">
+				<option value="0">Male</option>
+				<option value="1">Female</option>
+			</select>
+			<br><br>
+			<button id="start">Play!</button>
+		</div>
+		<canvas width="800" height="600" style="display: none" id="canvas"></canvas>
+	</center>
+	<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../bower_components/EaselJS/lib/easeljs-0.8.2.min.js"></script>
+	<script src="../../dist/browser.min.js"></script>
+	<script src="./utility.js"></script>
+	<script src="./game.js"></script>
+	<script src="./menu.js"></script>
+	<script type="application/javascript">
+		$(document).ready(function(){
+			menu()
+			game()
+		})
+	</script>
+</body>
+</html>

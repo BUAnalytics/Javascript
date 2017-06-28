@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+	"baseUrl": "./src",
+	"lib": [ "dom", "es7" ],
+	"target": "es5",
+	"module": "commonjs",
+    "declaration": true,
+    "moduleResolution": "node",
+    "strictNullChecks": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "node_modules",
+    "bower_components",
+    "index.js",
+    "dist"
+  ]
+}
