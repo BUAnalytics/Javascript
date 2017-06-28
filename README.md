@@ -30,6 +30,8 @@ var userDoc = new BU.Document()
 
 ### Typescript
 
+For Typescript import and consume the library as shown.
+
 ```javascript
 import { API, AccessKey, Document } from 'bu-analytics'
 
@@ -41,6 +43,8 @@ const userDoc = new Document()
 ```
 
 ### Javascript
+
+For Javascript require and consume the library as shown.
 
 ```javascript
 const { API, AccessKey, Document } = require('bu-analytics')
