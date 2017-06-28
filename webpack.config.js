@@ -17,7 +17,9 @@ module.exports = [{
 		library: 'BG'
 	},
 	plugins: [
-		new webpack.optimize.UglifyJsPlugin()
+		new webpack.optimize.UglifyJsPlugin({
+			comments: false
+		})
     ],
 	module: {
 		rules: [{
@@ -27,11 +29,11 @@ module.exports = [{
 		}]
 	},
 	node: {
-    console: true,
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty'
-  }
+		console: true,
+		fs: 'empty',
+		net: 'empty',
+		tls: 'empty'
+	}
 }, {
 	
 	//Node
