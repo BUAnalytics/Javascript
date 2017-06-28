@@ -1,5 +1,5 @@
 {
-  "name": "bu-analytics",
+  "name": "@bu-analytics/plugin",
   "version": "0.1.0",
   "description": "BU Analytics plugin for Javascript and Typescript compatible with browsers and NodeJS.",
   "main": "dist/module.js",
@@ -10,7 +10,7 @@
     "popsicle": "^9.1.0"
   },
   "devDependencies": {
-    "prompt": "^1.0.0"
+    "prompt": "^1.0.0",
     "ts-loader": "^2.1.0",
     "typescript": "^2.3.4",
     "webpack-node-externals": "^1.6.0",
