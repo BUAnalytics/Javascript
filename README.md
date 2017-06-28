@@ -57,7 +57,7 @@ const userDoc = new Document()
 To authenticate with the backend you must first create an access key through the web management interface. Then pass these details into the api singleton instance.
 
 ```javascript
-API.instance.auth = AccessKey('585913d39dd4c40001c12920', '7BbQYgXi21A56D8ofOypaIkJDUjqoo')
+API.instance.auth = new AccessKey('585913d39dd4c40001c12920', '7BbQYgXi21A56D8ofOypaIkJDUjqoo')
 ```
 
 The hostname defaults to the university server although we can change this if necessary.
@@ -87,10 +87,10 @@ Documents support nested dictionaries, arrays and will encode literal data types
 
 ```javascript
 const userDoc = new Document({
-	userId: ..,
-	name: ..,
-	age: ..,
-	gender: ..,
+    userId: ..,
+    name: ..,
+    age: ..,
+    gender: ..,
     device: {
         type: ..,
         name: ..,
