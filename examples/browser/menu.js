@@ -45,14 +45,14 @@ var start = function(){
 		return
 	}
 	
-	//Check name exists
+	//Check the name field as been filled
 	if ($('#gender').val().length <= 0){
 		alert('Please select a gender')
 		return
 	}
 	
 	//Generate user id hash from two unique bits of information
-	userId = md5($('#name').val() + $('#gender').val())
+	const userId = MD5($('#name').val() + $('#gender').val())
 	
 	//Create new user in collection
 	var userDoc = new BG.Document({
