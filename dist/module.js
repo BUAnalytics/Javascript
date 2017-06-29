@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,7 +74,7 @@
 
 Object.defineProperty(exports, "__esModule", { value: true });
 //Modules
-var popsicle = __webpack_require__(7);
+var popsicle = __webpack_require__(8);
 //Includes
 var BUError_1 = __webpack_require__(2);
 var BUMethod;
@@ -160,7 +160,7 @@ var BUAPI = (function () {
             }
             //Return the successful json object
             if (success !== undefined) {
-                success(response.body);
+                success(JSON.parse(response.body));
             }
         })
             .catch(function (err) {
@@ -285,13 +285,13 @@ exports.BUCollection = BUCollection;
 Object.defineProperty(exports, "__esModule", { value: true });
 var BUError;
 (function (BUError) {
-    //! Core,
+    //! Core
     BUError[BUError["Unknown"] = 100] = "Unknown";
     BUError[BUError["Server"] = 200] = "Server";
     BUError[BUError["NotFound"] = 300] = "NotFound";
     BUError[BUError["Connection"] = 400] = "Connection";
     BUError[BUError["Json"] = 500] = "Json";
-    //! Users,
+    //! Users
     BUError[BUError["USR_Invalid"] = 2000] = "USR_Invalid";
     BUError[BUError["USR_NotFound"] = 2001] = "USR_NotFound";
     BUError[BUError["USR_Disabled"] = 2002] = "USR_Disabled";
@@ -323,18 +323,41 @@ var BUError;
     BUError[BUError["PRJ_InvalidBody"] = 41104] = "PRJ_InvalidBody";
     BUError[BUError["PRJ_InvalidIcon"] = 41105] = "PRJ_InvalidIcon";
     BUError[BUError["PRJ_InvalidImage"] = 41106] = "PRJ_InvalidImage";
-    //! Access Keys,
-    BUError[BUError["PRJ_ACK_Invalid"] = 42000] = "PRJ_ACK_Invalid";
-    BUError[BUError["PRJ_ACK_NotFound"] = 42001] = "PRJ_ACK_NotFound";
-    BUError[BUError["PRJ_ACK_Incorrect"] = 42002] = "PRJ_ACK_Incorrect";
-    BUError[BUError["PRJ_ACK_InvalidName"] = 42100] = "PRJ_ACK_InvalidName";
-    BUError[BUError["PRJ_ACK_InvalidStatus"] = 42101] = "PRJ_ACK_InvalidStatus";
-    //! Collections,
-    BUError[BUError["PRJ_COL_Invalid"] = 43000] = "PRJ_COL_Invalid";
-    BUError[BUError["PRJ_COL_NotFound"] = 43001] = "PRJ_COL_NotFound";
-    BUError[BUError["PRJ_COL_Access"] = 43002] = "PRJ_COL_Access";
-    BUError[BUError["PRJ_COL_InvalidName"] = 43100] = "PRJ_COL_InvalidName";
-    BUError[BUError["PRJ_COL_InvalidBody"] = 43101] = "PRJ_COL_InvalidBody";
+    //! Access Keys
+    BUError[BUError["ACK_Invalid"] = 42000] = "ACK_Invalid";
+    BUError[BUError["ACK_NotFound"] = 42001] = "ACK_NotFound";
+    BUError[BUError["ACK_Incorrect"] = 42002] = "ACK_Incorrect";
+    BUError[BUError["ACK_InvalidName"] = 42100] = "ACK_InvalidName";
+    BUError[BUError["ACK_InvalidStatus"] = 42101] = "ACK_InvalidStatus";
+    //! Collections
+    BUError[BUError["COL_Invalid"] = 43000] = "COL_Invalid";
+    BUError[BUError["COL_NotFound"] = 43001] = "COL_NotFound";
+    BUError[BUError["COL_Access"] = 43002] = "COL_Access";
+    BUError[BUError["COL_InvalidSize"] = 43100] = "COL_InvalidSize";
+    BUError[BUError["COL_InvalidPage"] = 43101] = "COL_InvalidPage";
+    BUError[BUError["COL_InvalidSort"] = 43102] = "COL_InvalidSort";
+    BUError[BUError["COL_InvalidDir"] = 43103] = "COL_InvalidDir";
+    BUError[BUError["COL_InvalidName"] = 43104] = "COL_InvalidName";
+    BUError[BUError["COL_InvalidBody"] = 43105] = "COL_InvalidBody";
+    //! Visuals
+    BUError[BUError["VIS_Invalid"] = 44000] = "VIS_Invalid";
+    BUError[BUError["VIS_NotFound"] = 44001] = "VIS_NotFound";
+    BUError[BUError["VIS_Access"] = 44002] = "VIS_Access";
+    BUError[BUError["VIS_InvalidCollection"] = 44100] = "VIS_InvalidCollection";
+    BUError[BUError["VIS_InvalidName"] = 44101] = "VIS_InvalidName";
+    BUError[BUError["VIS_InvalidType"] = 44102] = "VIS_InvalidType";
+    BUError[BUError["VIS_InvalidOptions"] = 44103] = "VIS_InvalidOptions";
+    BUError[BUError["VIS_IncorrectCollection"] = 44200] = "VIS_IncorrectCollection";
+    BUError[BUError["VIS_IncorrectType"] = 44201] = "VIS_IncorrectType";
+    //! Applications
+    BUError[BUError["APP_MissingContName"] = 51000] = "APP_MissingContName";
+    BUError[BUError["APP_MissingContEmail"] = 51001] = "APP_MissingContEmail";
+    BUError[BUError["APP_MissingContPhone"] = 51002] = "APP_MissingContPhone";
+    BUError[BUError["APP_MissingOrgName"] = 51003] = "APP_MissingOrgName";
+    BUError[BUError["APP_MissingOrgAddress"] = 51004] = "APP_MissingOrgAddress";
+    BUError[BUError["APP_MissingProjDuration"] = 51005] = "APP_MissingProjDuration";
+    BUError[BUError["APP_MissingProjPurpose"] = 51006] = "APP_MissingProjPurpose";
+    BUError[BUError["APP_MissingProjDescription"] = 51007] = "APP_MissingProjDescription";
 })(BUError = exports.BUError || (exports.BUError = {}));
 
 
@@ -447,6 +470,89 @@ exports.BUDocument = BUDocument;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var BUAPI_1 = __webpack_require__(0);
+var BUID = (function () {
+    function BUID() {
+        //Store identifiers
+        this.identifiers = [];
+        //Upload timer interval
+        this.interval = 2000;
+        this.size = 100;
+    }
+    Object.defineProperty(BUID, "instance", {
+        get: function () { return this._instance || (this._instance = new this()); },
+        enumerable: true,
+        configurable: true
+    });
+    //Return first id in cache list and remove
+    BUID.prototype.generate = function () {
+        //Check whether identifiers are depleted
+        if (this.identifiers.length <= 0) {
+            //Log error
+            console.log('[BUAnalytics] Identifier cache has been depleted, please adjust your BUID cache size or interval');
+            //Generate backup identifier
+            return this.UUID();
+        }
+        //Grab identifier and remove from cache
+        return this.identifiers.shift();
+    };
+    //Start caching identifiers
+    BUID.prototype.start = function (size) {
+        if (size === void 0) { size = 100; }
+        this.size = size;
+        this.refreshPerform();
+    };
+    //Push documents in all collections to backend server
+    BUID.prototype.refreshPerform = function (timer) {
+        var _this = this;
+        //Only refresh if identifier cache is a quarter empty
+        if (this.identifiers.length < ((this.size / 4) * 3)) {
+            this.refresh();
+        }
+        //Create timer to push all collections every x seconds
+        if (this.interval > 0) {
+            setInterval(function () {
+                _this.refreshPerform();
+            }, this.interval);
+        }
+    };
+    BUID.prototype.refresh = function () {
+        var _this = this;
+        //Upload data to server using api request
+        var count = this.size - this.identifiers.length;
+        BUAPI_1.BUAPI.instance.requestPath('/projects/collections/documents/ids/' + count, BUAPI_1.BUMethod.GET, {}, function (code) {
+            //Log error code
+            console.log('[BUAnalytics] Failed to refresh ' + count + ' identifiers from server with error code ' + code);
+        }, function (response) {
+            //Cast and add identifiers from response
+            _this.identifiers = _this.identifiers.concat(response.ids);
+        });
+    };
+    //Generate bacup random identifier
+    BUID.prototype.UUID = function () {
+        var d = new Date().getTime();
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+            d += performance.now();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    };
+    return BUID;
+}());
+exports.BUID = BUID;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
@@ -454,6 +560,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(2));
 __export(__webpack_require__(0));
 __export(__webpack_require__(3));
+__export(__webpack_require__(6));
 __export(__webpack_require__(5));
 __export(__webpack_require__(1));
 __export(__webpack_require__(4));
@@ -463,6 +570,8 @@ var BUAPI_1 = __webpack_require__(0);
 exports.API = BUAPI_1.BUAPI;
 var BUAccessKey_1 = __webpack_require__(3);
 exports.AccessKey = BUAccessKey_1.BUAccessKey;
+var BUID_1 = __webpack_require__(6);
+exports.ID = BUID_1.BUID;
 var BUDocument_1 = __webpack_require__(5);
 exports.Document = BUDocument_1.BUDocument;
 var BUCollection_1 = __webpack_require__(1);
@@ -472,7 +581,7 @@ exports.CollectionManager = BUCollectionManager_1.BUCollectionManager;
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports) {
 
 module.exports = require("popsicle");
