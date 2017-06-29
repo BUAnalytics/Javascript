@@ -14,7 +14,7 @@ module.exports = [{
 		path: path.resolve('./dist'),
 		filename: './browser.min.js',
 		libraryTarget: 'var',
-		library: 'BG'
+		library: 'BU'
 	},
 	plugins: [
 		new webpack.optimize.UglifyJsPlugin({

@@ -8,6 +8,25 @@ var target
 var attempts
 var sessionStart
 
+var play = function(){
+	
+	//Reset variables
+	clicksRemaining = 5
+	startTime = 0
+	delayTime = 0
+	target = { x: 0, y: 0 }
+	attempts = []
+	sessionStart = +new Date()
+	
+	//Set session start
+    sessionStart = +new Date()
+    
+    //Generate unique session identifier
+    sessionId = BU.ID.instance.generate()
+    
+    delayButton()
+}
+
 var game = function(){
 	
 	//Create canvas
@@ -32,7 +51,8 @@ var game = function(){
         var clickTime = ((+new Date()) - startTime) / 1000
         
         //Create new click and add it to list
-        var clickDoc = new BG.Document({
+        var clickDoc = new BU.Document({
+            sessionId: sessionId,
             userId: userId,
             clickTime: clickTime,
             delayTime: delayTime,
@@ -42,26 +62,10 @@ var game = function(){
         })
         
         //Add click to collection
-        BG.CollectionManager.instance.collections['Clicks'].push(clickDoc)
+        BU.CollectionManager.instance.collections['Clicks'].push(clickDoc)
         
         delayButton()
 	})
-}
-
-var play = function(){
-	
-	//Reset variables
-	clicksRemaining = 5
-	startTime = 0
-	delayTime = 0
-	target = { x: 0, y: 0 }
-	attempts = []
-	sessionStart = +new Date()
-	
-	//Set session start
-    sessionStart = +new Date()
-    
-    delayButton()
 }
 
 var delayButton = function(){
@@ -70,17 +74,18 @@ var delayButton = function(){
     if (clicksRemaining <= 0){
         
         //Create new session in collection
-        var sessionDoc = new BG.Document({
+        var sessionDoc = new BU.Document({
+            sessionId: sessionId,
             userId: userId,
             start: sessionStart,
             end: +new Date()
         })
         
         //Add documents to collections
-        BG.CollectionManager.instance.collections['Sessions'].push(sessionDoc)
+        BU.CollectionManager.instance.collections['Sessions'].push(sessionDoc)
         
         //Make sure collections are uploaded incase of closure
-        BG.CollectionManager.instance.uploadAll()
+        BU.CollectionManager.instance.uploadAll()
         
 		//Reset menu
         $('#start').text('Play!')

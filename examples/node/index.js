@@ -1,14 +1,16 @@
 //Modules
-const MD5 = require('./utility')
 const prompt = require('prompt')
 const os = require('os')
 
 //Library
-const { API, AccessKey, CollectionManager, Document } = require('../../dist/module.js')
+const { ID, API, AccessKey, CollectionManager, Document } = require('../../dist/module.js')
 
 //Set backend api url and authentication details
 API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 //API.instance.url = 'https://192.168.0.69' //Defaults to https://bu-games.bmth.ac.uk
+
+//Start loading a cache of 200 unique identifiers from backend
+ID.instance.start(200)
 
 //Create collections with names
 CollectionManager.instance.create([ 'Users', 'Sessions', 'Clicks' ])
@@ -25,6 +27,7 @@ CollectionManager.instance.success = (collection, count) => {
 
 //Configure collection upload interval
 CollectionManager.instance.interval = 4000
+ID.instance.interval = 4000
 
 //Start prompt and ask questions
 prompt.start()
@@ -62,12 +65,9 @@ const ask = function(){
 			return
 		}
 	
-		//Generate user id hash from two unique bits of information
-		const userId = MD5(result.name + (gender === 'm' ? '0' : '1'));
-	
 		//Create new user in collection
 		var userDoc = new Document({
-			userId: userId,
+			userId: ID.instance.generate(),
 			name: result.name,
 			age: parseInt(result.age),
 			gender: gender === 'm' ? 0 : 1,

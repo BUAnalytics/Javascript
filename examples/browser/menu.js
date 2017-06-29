@@ -1,24 +1,28 @@
 var menu = function(){
 	
 	//Set backend api url and authentication details
-    BG.API.instance.auth = new BG.AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
-    //BG.API.instance.url = 'https://192.168.0.69' //Defaults to https://bu-games.bmth.ac.uk
+    BU.API.instance.auth = new BU.AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
+    //BU.API.instance.url = 'https://192.168.0.69' //Defaults to https://bu-games.bmth.ac.uk
+	
+	//Start loading a cache of 200 unique identifiers from backend
+	BU.ID.instance.start(200)
 	
 	//Create collections with names
-	BG.CollectionManager.instance.create([ 'Users', 'Sessions', 'Clicks' ])
+	BU.CollectionManager.instance.create([ 'Users', 'Sessions', 'Clicks' ])
 	
 	//Subscribe to collection errors
-    BG.CollectionManager.instance.error = (collection, code) => {
+    BU.CollectionManager.instance.error = (collection, code) => {
         console.log('[BUAnalytics][' + collection.name + '] Failed to upload with error code ' + code)
     }
     
     //Subscribe to collection uploads
-    BG.CollectionManager.instance.success = (collection, count) => {
+    BU.CollectionManager.instance.success = (collection, count) => {
         console.log('[BUAnalytics][' + collection.name + '] Successfully uploaded ' + count + ' documents')
     }
     
     //Configure collection upload interval
-    BG.CollectionManager.instance.interval = 4000
+    BU.CollectionManager.instance.interval = 4000
+	BU.ID.instance.interval = 4000
 
 	//Wait for game to start
 	$('#start').click(function(){
@@ -52,10 +56,10 @@ var start = function(){
 	}
 	
 	//Generate user id hash from two unique bits of information
-	const userId = MD5($('#name').val() + $('#gender').val())
+	userId = BU.ID.instance.generate()
 	
 	//Create new user in collection
-	var userDoc = new BG.Document({
+	var userDoc = new BU.Document({
 		userId: userId,
 		name: $('#name').val(),
 		age: parseInt($('#age').val()),
@@ -67,7 +71,7 @@ var start = function(){
 	})
 	
 	//Add documents to collections
-    BG.CollectionManager.instance.collections['Users'].push(userDoc)
+    BU.CollectionManager.instance.collections['Users'].push(userDoc)
 	
 	//Start countdown
 	$('#start').text('3')
