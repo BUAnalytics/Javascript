@@ -7,7 +7,7 @@ BU Analytics plugin for Javascript and Typescript compatible with browsers and N
 To install the plugin execute the [NPM](https://www.npmjs.com/package/@bu-analytics/plugin) command in your project environment.
 
 ```bash
-npm i --save bu-analytics
+npm i --save @bu-analytics/plugin
 ```
 
 ### Browsers
@@ -33,7 +33,7 @@ var userDoc = new BU.Document()
 For Typescript import and consume the library as shown.
 
 ```javascript
-import { API, AccessKey, Document } from 'bu-analytics'
+import { API, AccessKey, Document } from '@bu-analytics/plugin'
 
 //Authenticate
 API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
@@ -47,7 +47,7 @@ const userDoc = new Document()
 For Javascript require and consume the library as shown.
 
 ```javascript
-const { API, AccessKey, Document } = require('bu-analytics')
+const { API, AccessKey, Document } = require('@bu-analytics/plugin')
 
 //Authenticate
 API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
