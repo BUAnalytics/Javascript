@@ -89,7 +89,7 @@ export class BUAPI{
 				
 				//Return the successful json object
 				if (success !== undefined){
-					success(response.body)
+					success(JSON.parse(response.body))
 				}				
 			})
 			.catch(err => {
