@@ -4,7 +4,7 @@ BU Analytics plugin for Javascript and Typescript compatible with browsers and N
 
 ## Installation
 
-To install the plugin execute the npm command in your project environment.
+To install the plugin execute the [NPM](https://www.npmjs.com/package/@bu-analytics/plugin) command in your project environment.
 
 ```bash
 npm i --save bu-analytics
@@ -22,7 +22,7 @@ The library will then be exported under the BU variable for use.
 
 ```javascript
 //Authenticate
-BU.API.instance.auth = new BU.AccessKey('58569825377ba00001ae8315', 'KUygr6BUxhEtsSQ1RJYla2UCtiEE8R')
+BU.API.instance.auth = new BU.AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 
 //Create document
 var userDoc = new BU.Document()
@@ -36,7 +36,7 @@ For Typescript import and consume the library as shown.
 import { API, AccessKey, Document } from 'bu-analytics'
 
 //Authenticate
-API.instance.auth = new AccessKey('58569825377ba00001ae8315', 'KUygr6BUxhEtsSQ1RJYla2UCtiEE8R')
+API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 
 //Create document
 const userDoc = new Document()
@@ -50,7 +50,7 @@ For Javascript require and consume the library as shown.
 const { API, AccessKey, Document } = require('bu-analytics')
 
 //Authenticate
-API.instance.auth = new AccessKey('58569825377ba00001ae8315', 'KUygr6BUxhEtsSQ1RJYla2UCtiEE8R')
+API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 
 //Create document
 const userDoc = new Document()
@@ -61,7 +61,7 @@ const userDoc = new Document()
 To authenticate with the backend you must first create an access key through the web management interface. Then pass these details into the api singleton instance.
 
 ```javascript
-API.instance.auth = new AccessKey('585913d39dd4c40001c12920', '7BbQYgXi21A56D8ofOypaIkJDUjqoo')
+API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 ```
 
 The hostname defaults to the university server although we can change this if necessary.
@@ -107,10 +107,12 @@ You can also create documents through the add method or can access the raw dicti
 
 ```javascript
 const userDoc = new Document()
+
 userDoc.push('userId', ..)
 userDoc.push('name', ..)
-userDoc.push('age', ..)
-userDoc.push('gender', ..)
+
+userDoc.contents['age'] = ..
+userDoc.contents['gender'] = ..
 ```
 
 ## Adding a Document to Collection
@@ -152,3 +154,28 @@ CollectionManager.instance.success = (collection, count) => {
 ```
 
 You can also provide error and success actions to an individual collection using the upload method.
+
+## Unique Identifiers
+
+You can use our backend to generate unique identifiers for use inside documents. 
+Setup the cache at startup specifying how many identifiers you'd like to hold.
+
+```javascript
+ID.instance.start(200)
+```
+
+Once the cache has been marked as ready you can generate identifiers at any time.
+
+```javascript
+if (ID.instance.isReady){
+  userDoc.push('userId', ID.instance.generate())
+}
+```
+
+You can modify the refresh frequency or size of the cache depending on how many identifiers you require. 
+GUIDs will be generated as a backup should the cache become empty.
+
+```javascript
+ID.instance.interval = 4000
+ID.instance.size = 100
+```

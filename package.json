@@ -1,6 +1,6 @@
 {
   "name": "@bu-analytics/plugin",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "BU Analytics plugin for Javascript and Typescript compatible with browsers and NodeJS.",
   "main": "dist/module.js",
   "directories": {
