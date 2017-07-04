@@ -1,6 +1,7 @@
 //Includes
 import { BUError } from './BUError'
 import { BUCollection } from './BUCollection'
+import { BUDocument } from './BUDocument'
 
 export class BUCollectionManager {
     
@@ -34,6 +35,18 @@ export class BUCollectionManager {
             //Create new collection if name doesnt exist
             this.collections[name] = new BUCollection(name)
         }
+    }
+    
+    //Convenience method for adding a document to a collection and creating the collection if non-existant
+    push(collection: string, document: BUDocument){
+        
+        //Check whether document exists and create
+        if (!Object.keys(this.collections).includes(name)){
+            this.collections[collection] = new BUCollection(collection)
+        }
+        
+        //Add document to collection
+        this.collections[collection].push(document)
     }
     
     //Push documents in all collections to backend server
