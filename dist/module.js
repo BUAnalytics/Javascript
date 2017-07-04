@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -72,11 +72,158 @@
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var BUDocument_1 = __webpack_require__(2);
+var BUCollectionManager_1 = __webpack_require__(1);
+var BUUser_1 = __webpack_require__(5);
+var BUSession_1 = __webpack_require__(9);
+var BUTemplate = (function (_super) {
+    __extends(BUTemplate, _super);
+    function BUTemplate() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.userId = BUUser_1.BUUser.current !== undefined ? BUUser_1.BUUser.current.userId : undefined;
+        _this.sessionId = BUSession_1.BUSession.current !== undefined ? BUSession_1.BUSession.current.sessionId : undefined;
+        return _this;
+    }
+    BUTemplate.prototype.upload = function (collection) {
+        //Add optional linking fields
+        if (this.userId !== undefined) {
+            this.push('userId', this.userId);
+        }
+        if (this.sessionId !== undefined) {
+            this.push('sessionId', this.sessionId);
+        }
+        //Add to collection manager
+        BUCollectionManager_1.BUCollectionManager.instance.push(collection, this);
+    };
+    return BUTemplate;
+}(BUDocument_1.BUDocument));
+exports.BUTemplate = BUTemplate;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BUCollection_1 = __webpack_require__(7);
+var BUCollectionManager = (function () {
+    function BUCollectionManager() {
+        //Store collections
+        this.collections = {};
+        //Upload timer interval
+        this.interval = 2000.0;
+        this.uploadAllPerform();
+    }
+    Object.defineProperty(BUCollectionManager, "instance", {
+        get: function () { return this._instance || (this._instance = new this()); },
+        enumerable: true,
+        configurable: true
+    });
+    //Create collections from array of name
+    BUCollectionManager.prototype.create = function (names) {
+        for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
+            var name_1 = names_1[_i];
+            //Check name doesn't exists in collections
+            if (Object.keys(this.collections).includes(name_1)) {
+                continue;
+            }
+            //Create new collection if name doesnt exist
+            this.collections[name_1] = new BUCollection_1.BUCollection(name_1);
+        }
+    };
+    //Convenience method for adding a document to a collection and creating the collection if non-existant
+    BUCollectionManager.prototype.push = function (collection, document) {
+        //Check whether document exists and create
+        if (!Object.keys(this.collections).includes(name)) {
+            this.collections[collection] = new BUCollection_1.BUCollection(collection);
+        }
+        //Add document to collection
+        this.collections[collection].push(document);
+    };
+    //Push documents in all collections to backend server
+    BUCollectionManager.prototype.uploadAllPerform = function (timer) {
+        var _this = this;
+        this.uploadAll();
+        //Create timer to push all collections every x seconds
+        if (this.interval > 0) {
+            setInterval(function () {
+                _this.uploadAllPerform();
+            }, this.interval);
+        }
+    };
+    BUCollectionManager.prototype.uploadAll = function () {
+        var _this = this;
+        //Push all collections
+        Object.keys(this.collections).forEach(function (key) {
+            var collection = _this.collections[key];
+            collection.upload(function (code) {
+                //Notify error
+                if (_this.error !== undefined) {
+                    _this.error(collection, code);
+                }
+            }, function (count) {
+                //Notify success
+                if (_this.success !== undefined) {
+                    _this.success(collection, count);
+                }
+            });
+        });
+    };
+    return BUCollectionManager;
+}());
+exports.BUCollectionManager = BUCollectionManager;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BUDocument = (function () {
+    function BUDocument(contents) {
+        this.contents = contents === undefined ? {} : contents;
+    }
+    BUDocument.prototype.push = function (key, value) {
+        this.contents[key] = value;
+    };
+    BUDocument.prototype.concat = function (contents) {
+        var _this = this;
+        Object.keys(contents).forEach(function (key) {
+            _this.contents[key] = contents[key];
+        });
+    };
+    return BUDocument;
+}());
+exports.BUDocument = BUDocument;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 Object.defineProperty(exports, "__esModule", { value: true });
 //Modules
-var popsicle = __webpack_require__(8);
+var popsicle = __webpack_require__(16);
 //Includes
-var BUError_1 = __webpack_require__(2);
+var BUError_1 = __webpack_require__(8);
 var BUMethod;
 (function (BUMethod) {
     BUMethod[BUMethod["GET"] = 0] = "GET";
@@ -184,13 +331,228 @@ exports.BUAPI = BUAPI;
 
 
 /***/ }),
-/* 1 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var BUAPI_1 = __webpack_require__(0);
+//Includes
+var BUAPI_1 = __webpack_require__(3);
+var BUID = (function () {
+    function BUID() {
+        //Store identifiers
+        this.identifiers = [];
+        //Upload timer interval
+        this.interval = 2000;
+        this.size = 100;
+    }
+    Object.defineProperty(BUID, "instance", {
+        get: function () { return this._instance || (this._instance = new this()); },
+        enumerable: true,
+        configurable: true
+    });
+    //Return first id in cache list and remove
+    BUID.prototype.generate = function () {
+        //Check whether identifiers are depleted
+        if (this.identifiers.length <= 0) {
+            //Log error
+            console.log('[BUAnalytics] Identifier cache has been depleted, please adjust your BUID cache size or interval');
+            //Generate backup identifier
+            return this.UUID();
+        }
+        //Grab identifier and remove from cache
+        return this.identifiers.shift();
+    };
+    //Start caching identifiers
+    BUID.prototype.start = function (size) {
+        if (size === void 0) { size = 100; }
+        this.size = size;
+        this.refreshPerform();
+    };
+    //Push documents in all collections to backend server
+    BUID.prototype.refreshPerform = function (timer) {
+        var _this = this;
+        //Only refresh if identifier cache is a quarter empty
+        if (this.identifiers.length < ((this.size / 4) * 3)) {
+            this.refresh();
+        }
+        //Create timer to push all collections every x seconds
+        if (this.interval > 0) {
+            setInterval(function () {
+                _this.refreshPerform();
+            }, this.interval);
+        }
+    };
+    BUID.prototype.refresh = function () {
+        var _this = this;
+        //Upload data to server using api request
+        var count = this.size - this.identifiers.length;
+        BUAPI_1.BUAPI.instance.requestPath('/projects/collections/documents/ids/' + count, BUAPI_1.BUMethod.GET, {}, function (code) {
+            //Log error code
+            console.log('[BUAnalytics] Failed to refresh ' + count + ' identifiers from server with error code ' + code);
+        }, function (response) {
+            //Cast and add identifiers from response
+            _this.identifiers = _this.identifiers.concat(response.ids);
+        });
+    };
+    //Generate bacup random identifier
+    BUID.prototype.UUID = function () {
+        var d = new Date().getTime();
+        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+            d += performance.now();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+    };
+    return BUID;
+}());
+exports.BUID = BUID;
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var BUDocument_1 = __webpack_require__(2);
+var BUID_1 = __webpack_require__(4);
+var BUCollectionManager_1 = __webpack_require__(1);
+var BUUserGender;
+(function (BUUserGender) {
+    BUUserGender[BUUserGender["Male"] = 0] = "Male";
+    BUUserGender[BUUserGender["Female"] = 1] = "Female";
+})(BUUserGender = exports.BUUserGender || (exports.BUUserGender = {}));
+var BUUser = (function (_super) {
+    __extends(BUUser, _super);
+    function BUUser(collection) {
+        var _this = _super.call(this) || this;
+        _this.userId = BUID_1.BUID.instance.generate();
+        _this.collection = collection;
+        return _this;
+    }
+    BUUser.prototype.upload = function () {
+        //Add required fields
+        this.push('userId', this.userId);
+        //Add optional fields
+        if (this.username !== undefined) {
+            this.push('username', this.username);
+        }
+        if (this.name !== undefined) {
+            this.push('name', this.name);
+        }
+        if (this.firstName !== undefined) {
+            this.push('first_name', this.firstName);
+        }
+        if (this.lastName !== undefined) {
+            this.push('last_name', this.lastName);
+        }
+        if (this.email !== undefined) {
+            this.push('email', this.email);
+        }
+        if (this.phone !== undefined) {
+            this.push('phone', this.phone);
+        }
+        if (this.age !== undefined) {
+            this.push('age', this.age);
+        }
+        if (this.gender !== undefined) {
+            this.push('gender', this.gender);
+        }
+        //Add to collection manager
+        BUCollectionManager_1.BUCollectionManager.instance.push(this.collection || 'Users', this);
+        //Remove current if self
+        if (BUUser.current === this) {
+            BUUser.current = undefined;
+        }
+    };
+    return BUUser;
+}(BUDocument_1.BUDocument));
+exports.BUUser = BUUser;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(8));
+__export(__webpack_require__(3));
+__export(__webpack_require__(10));
+__export(__webpack_require__(4));
+__export(__webpack_require__(2));
+__export(__webpack_require__(7));
+__export(__webpack_require__(1));
+__export(__webpack_require__(11));
+__export(__webpack_require__(12));
+__export(__webpack_require__(13));
+__export(__webpack_require__(14));
+__export(__webpack_require__(15));
+__export(__webpack_require__(9));
+__export(__webpack_require__(0));
+__export(__webpack_require__(5));
+var BUError_1 = __webpack_require__(8);
+exports.Error = BUError_1.BUError;
+var BUAPI_1 = __webpack_require__(3);
+exports.API = BUAPI_1.BUAPI;
+var BUAccessKey_1 = __webpack_require__(10);
+exports.AccessKey = BUAccessKey_1.BUAccessKey;
+var BUID_1 = __webpack_require__(4);
+exports.ID = BUID_1.BUID;
+var BUDocument_1 = __webpack_require__(2);
+exports.Document = BUDocument_1.BUDocument;
+var BUCollection_1 = __webpack_require__(7);
+exports.Collection = BUCollection_1.BUCollection;
+var BUCollectionManager_1 = __webpack_require__(1);
+exports.CollectionManager = BUCollectionManager_1.BUCollectionManager;
+var BUDeath_1 = __webpack_require__(11);
+exports.Death = BUDeath_1.BUDeath;
+var BUPerformance_1 = __webpack_require__(12);
+exports.Performance = BUPerformance_1.BUPerformance;
+var BUQuestion_1 = __webpack_require__(13);
+exports.Question = BUQuestion_1.BUQuestion;
+var BUScore_1 = __webpack_require__(14);
+exports.Score = BUScore_1.BUScore;
+var BUScreen_1 = __webpack_require__(15);
+exports.Screen = BUScreen_1.BUScreen;
+var BUSession_1 = __webpack_require__(9);
+exports.Session = BUSession_1.BUSession;
+var BUTemplate_1 = __webpack_require__(0);
+exports.Template = BUTemplate_1.BUTemplate;
+var BUUser_1 = __webpack_require__(5);
+exports.User = BUUser_1.BUUser;
+exports.Timestamp = function () { return Math.round((new Date()).getTime() / 1000); };
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var BUAPI_1 = __webpack_require__(3);
 var BUCollection = (function () {
     function BUCollection(name) {
         //Document properties, sending data is moved from documents to buffer
@@ -277,7 +639,7 @@ exports.BUCollection = BUCollection;
 
 
 /***/ }),
-/* 2 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -362,7 +724,82 @@ var BUError;
 
 
 /***/ }),
-/* 3 */
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var _1 = __webpack_require__(6);
+var BUDocument_1 = __webpack_require__(2);
+var BUID_1 = __webpack_require__(4);
+var BUCollectionManager_1 = __webpack_require__(1);
+var BUUser_1 = __webpack_require__(5);
+var BUSession = (function (_super) {
+    __extends(BUSession, _super);
+    function BUSession(collection) {
+        var _this = _super.call(this) || this;
+        _this.sessionId = BUID_1.BUID.instance.generate();
+        _this.userId = BUUser_1.BUUser.current !== undefined ? BUUser_1.BUUser.current.userId : undefined;
+        _this.started = _1.Timestamp();
+        _this.collection = collection;
+        return _this;
+    }
+    BUSession.prototype.start = function () {
+        this.started = _1.Timestamp();
+    };
+    BUSession.prototype.end = function () {
+        this.ended = _1.Timestamp();
+    };
+    BUSession.prototype.upload = function () {
+        //Add required fields
+        this.concat({
+            'sessionId': this.sessionId,
+            'started': this.started,
+            'ended': this.ended || _1.Timestamp(),
+            'length': (this.ended || _1.Timestamp()) - this.started
+        });
+        //Add optional fields
+        if (this.userId !== undefined) {
+            this.push('userId', this.userId);
+        }
+        if (this.ip !== undefined) {
+            this.push('ip', this.ip);
+        }
+        if (this.device !== undefined) {
+            this.push('device', this.device);
+        }
+        if (this.system !== undefined) {
+            this.push('system', this.system);
+        }
+        if (this.version !== undefined) {
+            this.push('version', this.version);
+        }
+        //Add to collection manager
+        BUCollectionManager_1.BUCollectionManager.instance.push(this.collection || 'Sessions', this);
+        //Remove current if self
+        if (BUSession.current === this) {
+            BUSession.current = undefined;
+        }
+    };
+    return BUSession;
+}(BUDocument_1.BUDocument));
+exports.BUSession = BUSession;
+
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -379,209 +816,265 @@ exports.BUAccessKey = BUAccessKey;
 
 
 /***/ }),
-/* 4 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var BUCollection_1 = __webpack_require__(1);
-var BUCollectionManager = (function () {
-    function BUCollectionManager() {
-        //Store collections
-        this.collections = {};
-        //Upload timer interval
-        this.interval = 2000.0;
-        this.uploadAllPerform();
-    }
-    Object.defineProperty(BUCollectionManager, "instance", {
-        get: function () { return this._instance || (this._instance = new this()); },
-        enumerable: true,
-        configurable: true
-    });
-    //Create collections from array of name
-    BUCollectionManager.prototype.create = function (names) {
-        for (var _i = 0, names_1 = names; _i < names_1.length; _i++) {
-            var name_1 = names_1[_i];
-            //Check name doesn't exists in collections
-            if (Object.keys(this.collections).includes(name_1)) {
-                continue;
-            }
-            //Create new collection if name doesnt exist
-            this.collections[name_1] = new BUCollection_1.BUCollection(name_1);
-        }
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    //Push documents in all collections to backend server
-    BUCollectionManager.prototype.uploadAllPerform = function (timer) {
-        var _this = this;
-        this.uploadAll();
-        //Create timer to push all collections every x seconds
-        if (this.interval > 0) {
-            setInterval(function () {
-                _this.uploadAllPerform();
-            }, this.interval);
-        }
-    };
-    BUCollectionManager.prototype.uploadAll = function () {
-        var _this = this;
-        //Push all collections
-        Object.keys(this.collections).forEach(function (key) {
-            var collection = _this.collections[key];
-            collection.upload(function (code) {
-                //Notify error
-                if (_this.error !== undefined) {
-                    _this.error(collection, code);
-                }
-            }, function (count) {
-                //Notify success
-                if (_this.success !== undefined) {
-                    _this.success(collection, count);
-                }
-            });
-        });
-    };
-    return BUCollectionManager;
-}());
-exports.BUCollectionManager = BUCollectionManager;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var BUDocument = (function () {
-    function BUDocument(contents) {
-        this.contents = contents === undefined ? {} : contents;
-    }
-    BUDocument.prototype.push = function (key, value) {
-        this.contents[key] = value;
-    };
-    return BUDocument;
-}());
-exports.BUDocument = BUDocument;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 //Includes
-var BUAPI_1 = __webpack_require__(0);
-var BUID = (function () {
-    function BUID() {
-        //Store identifiers
-        this.identifiers = [];
-        //Upload timer interval
-        this.interval = 2000;
-        this.size = 100;
+var BUTemplate_1 = __webpack_require__(0);
+var BUDeath = (function (_super) {
+    __extends(BUDeath, _super);
+    function BUDeath(location, collection) {
+        var _this = _super.call(this) || this;
+        _this.location = location;
+        _this.collection = collection;
+        return _this;
     }
-    Object.defineProperty(BUID, "instance", {
-        get: function () { return this._instance || (this._instance = new this()); },
-        enumerable: true,
-        configurable: true
-    });
-    //Return first id in cache list and remove
-    BUID.prototype.generate = function () {
-        //Check whether identifiers are depleted
-        if (this.identifiers.length <= 0) {
-            //Log error
-            console.log('[BUAnalytics] Identifier cache has been depleted, please adjust your BUID cache size or interval');
-            //Generate backup identifier
-            return this.UUID();
+    BUDeath.prototype.upload = function () {
+        //Add optional fields
+        if (this.location !== undefined) {
+            this.push('location', this.location);
         }
-        //Grab identifier and remove from cache
-        return this.identifiers.shift();
+        _super.prototype.upload.call(this, this.collection || 'Deaths');
     };
-    //Start caching identifiers
-    BUID.prototype.start = function (size) {
-        if (size === void 0) { size = 100; }
-        this.size = size;
-        this.refreshPerform();
-    };
-    //Push documents in all collections to backend server
-    BUID.prototype.refreshPerform = function (timer) {
-        var _this = this;
-        //Only refresh if identifier cache is a quarter empty
-        if (this.identifiers.length < ((this.size / 4) * 3)) {
-            this.refresh();
-        }
-        //Create timer to push all collections every x seconds
-        if (this.interval > 0) {
-            setInterval(function () {
-                _this.refreshPerform();
-            }, this.interval);
-        }
-    };
-    BUID.prototype.refresh = function () {
-        var _this = this;
-        //Upload data to server using api request
-        var count = this.size - this.identifiers.length;
-        BUAPI_1.BUAPI.instance.requestPath('/projects/collections/documents/ids/' + count, BUAPI_1.BUMethod.GET, {}, function (code) {
-            //Log error code
-            console.log('[BUAnalytics] Failed to refresh ' + count + ' identifiers from server with error code ' + code);
-        }, function (response) {
-            //Cast and add identifiers from response
-            _this.identifiers = _this.identifiers.concat(response.ids);
-        });
-    };
-    //Generate bacup random identifier
-    BUID.prototype.UUID = function () {
-        var d = new Date().getTime();
-        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-            d += performance.now();
-        }
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = (d + Math.random() * 16) % 16 | 0;
-            d = Math.floor(d / 16);
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-        });
-    };
-    return BUID;
-}());
-exports.BUID = BUID;
+    return BUDeath;
+}(BUTemplate_1.BUTemplate));
+exports.BUDeath = BUDeath;
 
 
 /***/ }),
-/* 7 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(2));
-__export(__webpack_require__(0));
-__export(__webpack_require__(3));
-__export(__webpack_require__(6));
-__export(__webpack_require__(5));
-__export(__webpack_require__(1));
-__export(__webpack_require__(4));
-var BUError_1 = __webpack_require__(2);
-exports.Error = BUError_1.BUError;
-var BUAPI_1 = __webpack_require__(0);
-exports.API = BUAPI_1.BUAPI;
-var BUAccessKey_1 = __webpack_require__(3);
-exports.AccessKey = BUAccessKey_1.BUAccessKey;
-var BUID_1 = __webpack_require__(6);
-exports.ID = BUID_1.BUID;
-var BUDocument_1 = __webpack_require__(5);
-exports.Document = BUDocument_1.BUDocument;
-var BUCollection_1 = __webpack_require__(1);
-exports.Collection = BUCollection_1.BUCollection;
-var BUCollectionManager_1 = __webpack_require__(4);
-exports.CollectionManager = BUCollectionManager_1.BUCollectionManager;
+//Includes
+var _1 = __webpack_require__(6);
+var BUTemplate_1 = __webpack_require__(0);
+var BUPerformance = (function (_super) {
+    __extends(BUPerformance, _super);
+    function BUPerformance(name, collection) {
+        var _this = _super.call(this) || this;
+        _this.started = _1.Timestamp();
+        _this.name = name;
+        _this.collection = collection;
+        return _this;
+    }
+    BUPerformance.prototype.start = function () {
+        this.started = _1.Timestamp();
+    };
+    BUPerformance.prototype.end = function () {
+        this.ended = _1.Timestamp();
+    };
+    BUPerformance.prototype.upload = function () {
+        //Add required fields
+        this.concat({
+            'started': this.started,
+            'ended': this.ended || _1.Timestamp(),
+            'length': (this.ended || _1.Timestamp()) - this.started
+        });
+        //Add optional fields
+        if (this.name !== undefined) {
+            this.push('name', this.name);
+        }
+        _super.prototype.upload.call(this, this.collection || 'Performance');
+    };
+    return BUPerformance;
+}(BUTemplate_1.BUTemplate));
+exports.BUPerformance = BUPerformance;
 
 
 /***/ }),
-/* 8 */
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var _1 = __webpack_require__(6);
+var BUTemplate_1 = __webpack_require__(0);
+var BUQuestion = (function (_super) {
+    __extends(BUQuestion, _super);
+    function BUQuestion(name, collection) {
+        var _this = _super.call(this) || this;
+        _this.started = _1.Timestamp();
+        _this.name = name;
+        _this.collection = collection;
+        return _this;
+    }
+    BUQuestion.prototype.ask = function (question) {
+        this.question = question;
+        this.started = _1.Timestamp();
+    };
+    BUQuestion.prototype.respond = function (answer, correct) {
+        this.answer = answer;
+        this.correct = correct;
+        this.ended = _1.Timestamp();
+    };
+    BUQuestion.prototype.start = function () {
+        this.started = _1.Timestamp();
+    };
+    BUQuestion.prototype.end = function () {
+        this.ended = _1.Timestamp();
+    };
+    BUQuestion.prototype.upload = function () {
+        //Add required fields
+        this.concat({
+            'started': this.started,
+            'ended': this.ended || _1.Timestamp(),
+            'length': (this.ended || _1.Timestamp()) - this.started
+        });
+        //Add optional fields
+        if (this.name !== undefined) {
+            this.push('name', this.name);
+        }
+        if (this.question !== undefined) {
+            this.push('question', this.question);
+        }
+        if (this.answer !== undefined) {
+            this.push('answer', this.answer);
+        }
+        if (this.correct !== undefined) {
+            this.push('correct', this.correct);
+        }
+        _super.prototype.upload.call(this, this.collection || 'Questions');
+    };
+    return BUQuestion;
+}(BUTemplate_1.BUTemplate));
+exports.BUQuestion = BUQuestion;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var BUTemplate_1 = __webpack_require__(0);
+var BUScore = (function (_super) {
+    __extends(BUScore, _super);
+    function BUScore(value, collection) {
+        var _this = _super.call(this) || this;
+        _this.value = value;
+        _this.collection = collection;
+        return _this;
+    }
+    BUScore.prototype.pload = function () {
+        //Add optional fields
+        if (this.value !== undefined) {
+            this.push('value', this.value);
+        }
+        if (this.highest !== undefined) {
+            this.push('highest', this.highest);
+        }
+        _super.prototype.upload.call(this, this.collection || 'Scores');
+    };
+    return BUScore;
+}(BUTemplate_1.BUTemplate));
+exports.BUScore = BUScore;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+//Includes
+var _1 = __webpack_require__(6);
+var BUTemplate_1 = __webpack_require__(0);
+var BUScreen = (function (_super) {
+    __extends(BUScreen, _super);
+    function BUScreen(name, collection) {
+        var _this = _super.call(this) || this;
+        _this.started = _1.Timestamp();
+        _this.name = name;
+        _this.collection = collection;
+        return _this;
+    }
+    BUScreen.prototype.start = function () {
+        this.started = _1.Timestamp();
+    };
+    BUScreen.prototype.end = function () {
+        this.ended = _1.Timestamp();
+    };
+    BUScreen.prototype.upload = function () {
+        //Add required fields
+        this.concat({
+            'started': this.started,
+            'ended': this.ended || _1.Timestamp(),
+            'length': (this.ended || _1.Timestamp()) - this.started
+        });
+        //Add optional fields
+        if (this.name !== undefined) {
+            this.push('name', this.name);
+        }
+        _super.prototype.upload.call(this, this.collection || 'Screens');
+    };
+    return BUScreen;
+}(BUTemplate_1.BUTemplate));
+exports.BUScreen = BUScreen;
+
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports) {
 
 module.exports = require("popsicle");
