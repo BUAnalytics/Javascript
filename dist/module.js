@@ -160,7 +160,7 @@ var BUCollectionManager = (function () {
         this.uploadAll();
         //Create timer to push all collections every x seconds
         if (this.interval > 0) {
-            setInterval(function () {
+            setTimeout(function () {
                 _this.uploadAllPerform();
             }, this.interval);
         }
@@ -379,7 +379,7 @@ var BUID = (function () {
         }
         //Create timer to push all collections every x seconds
         if (this.interval > 0) {
-            setInterval(function () {
+            setTimeout(function () {
                 _this.refreshPerform();
             }, this.interval);
         }

@@ -55,7 +55,7 @@ export class BUCollectionManager {
         
         //Create timer to push all collections every x seconds
         if (this.interval > 0){
-	        setInterval(() => {
+	        setTimeout(() => {
 		        this.uploadAllPerform()
 	        }, this.interval)
         }

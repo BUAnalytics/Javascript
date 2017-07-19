@@ -51,7 +51,7 @@ export class BUID {
         
         //Create timer to push all collections every x seconds
         if (this.interval > 0){
-	        setInterval(() => {
+	        setTimeout(() => {
 		        this.refreshPerform()
 	        }, this.interval)
         }
