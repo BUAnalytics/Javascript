@@ -84,8 +84,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 //Includes
-var BUDocument_1 = __webpack_require__(2);
-var BUCollectionManager_1 = __webpack_require__(1);
+var BUDocument_1 = __webpack_require__(1);
+var BUCollectionManager_1 = __webpack_require__(2);
 var BUUser_1 = __webpack_require__(5);
 var BUSession_1 = __webpack_require__(9);
 var BUTemplate = (function (_super) {
@@ -119,7 +119,33 @@ exports.BUTemplate = BUTemplate;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var BUDocument = (function () {
+    function BUDocument(contents) {
+        this.contents = contents === undefined ? {} : contents;
+    }
+    BUDocument.prototype.push = function (key, value) {
+        this.contents[key] = value;
+    };
+    BUDocument.prototype.concat = function (contents) {
+        var _this = this;
+        Object.keys(contents).forEach(function (key) {
+            _this.contents[key] = contents[key];
+        });
+    };
+    return BUDocument;
+}());
+exports.BUDocument = BUDocument;
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var BUCollection_1 = __webpack_require__(7);
+var BUDocument_1 = __webpack_require__(1);
 var BUCollectionManager = (function () {
     function BUCollectionManager() {
         //Store collections
@@ -147,12 +173,20 @@ var BUCollectionManager = (function () {
     };
     //Convenience method for adding a document to a collection and creating the collection if non-existant
     BUCollectionManager.prototype.push = function (collection, document) {
+        //Create document if object given
+        var data;
+        if (document instanceof Object) {
+            document = new BUDocument_1.BUDocument(data);
+        }
+        else {
+            data = document;
+        }
         //Check whether document exists and create
         if (!Object.keys(this.collections).includes(name)) {
             this.collections[collection] = new BUCollection_1.BUCollection(collection);
         }
         //Add document to collection
-        this.collections[collection].push(document);
+        this.collections[collection].push(data);
     };
     //Push documents in all collections to backend server
     BUCollectionManager.prototype.uploadAllPerform = function (timer) {
@@ -186,31 +220,6 @@ var BUCollectionManager = (function () {
     return BUCollectionManager;
 }());
 exports.BUCollectionManager = BUCollectionManager;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var BUDocument = (function () {
-    function BUDocument(contents) {
-        this.contents = contents === undefined ? {} : contents;
-    }
-    BUDocument.prototype.push = function (key, value) {
-        this.contents[key] = value;
-    };
-    BUDocument.prototype.concat = function (contents) {
-        var _this = this;
-        Object.keys(contents).forEach(function (key) {
-            _this.contents[key] = contents[key];
-        });
-    };
-    return BUDocument;
-}());
-exports.BUDocument = BUDocument;
 
 
 /***/ }),
@@ -431,9 +440,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 //Includes
-var BUDocument_1 = __webpack_require__(2);
+var BUDocument_1 = __webpack_require__(1);
 var BUID_1 = __webpack_require__(4);
-var BUCollectionManager_1 = __webpack_require__(1);
+var BUCollectionManager_1 = __webpack_require__(2);
 var BUUserGender;
 (function (BUUserGender) {
     BUUserGender[BUUserGender["Male"] = 0] = "Male";
@@ -501,9 +510,9 @@ __export(__webpack_require__(8));
 __export(__webpack_require__(3));
 __export(__webpack_require__(10));
 __export(__webpack_require__(4));
-__export(__webpack_require__(2));
-__export(__webpack_require__(7));
 __export(__webpack_require__(1));
+__export(__webpack_require__(7));
+__export(__webpack_require__(2));
 __export(__webpack_require__(11));
 __export(__webpack_require__(12));
 __export(__webpack_require__(13));
@@ -520,11 +529,11 @@ var BUAccessKey_1 = __webpack_require__(10);
 exports.AccessKey = BUAccessKey_1.BUAccessKey;
 var BUID_1 = __webpack_require__(4);
 exports.ID = BUID_1.BUID;
-var BUDocument_1 = __webpack_require__(2);
+var BUDocument_1 = __webpack_require__(1);
 exports.Document = BUDocument_1.BUDocument;
 var BUCollection_1 = __webpack_require__(7);
 exports.Collection = BUCollection_1.BUCollection;
-var BUCollectionManager_1 = __webpack_require__(1);
+var BUCollectionManager_1 = __webpack_require__(2);
 exports.CollectionManager = BUCollectionManager_1.BUCollectionManager;
 var BUDeath_1 = __webpack_require__(11);
 exports.Death = BUDeath_1.BUDeath;
@@ -742,9 +751,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 //Includes
 var _1 = __webpack_require__(6);
-var BUDocument_1 = __webpack_require__(2);
+var BUDocument_1 = __webpack_require__(1);
 var BUID_1 = __webpack_require__(4);
-var BUCollectionManager_1 = __webpack_require__(1);
+var BUCollectionManager_1 = __webpack_require__(2);
 var BUUser_1 = __webpack_require__(5);
 var BUSession = (function (_super) {
     __extends(BUSession, _super);

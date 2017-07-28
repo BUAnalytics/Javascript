@@ -2,6 +2,8 @@
 
 BU Analytics plugin for Javascript and Typescript compatible with browsers and NodeJS.
 
+Please visit our [BU Analytics](http://bu-games.bmth.ac.uk) website for more information.
+
 ## Installation
 
 To install the plugin execute the [NPM](https://www.npmjs.com/package/@bu-analytics/plugin) command in your project environment.
@@ -64,12 +66,25 @@ To authenticate with the backend you must first create an access key through the
 API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
 ```
 
-The hostname defaults to the university server although we can change this if necessary.
+## Getting Started
+
+You can use the convenience method to quickly add a document to a collection which will be created if needed.
 
 ```javascript
-API.instance.url = 'http://192.168.0.x'
-API.instance.path = '/api/v1'
+CollectionManager.instance.push('Users', {
+    userId: ..,
+    name: ..,
+    age: ..,
+    gender: ..,
+    device: {
+        type: ..,
+        name: ..,
+        model: ..
+    }
+})
 ```
+
+If you would like to manage your own collections and documents please see below.
 
 ## Creating Collections
 
@@ -139,23 +154,17 @@ The default is 2000 milliseconds and setting it to 0 will disable automatic uplo
 CollectionManager.instance.interval = 4000
 ```
 
-You can use this convenience method to quickly add a document to a collection name which will be created if needed.
-
-```javascript
-BUCollectionManager.instance.push('Users', new BUDocument({ ... }))
-```
-
 ## Error Handling
 
 You can subscribe to actions in the collection manager to notify you when collections upload successfully or return errors.
 
 ```javascript
-CollectionManager.instance.error = (collection, code) => {
-  //...
+CollectionManager.instance.error = (collection, errorCode) => {
+    //...
 }
  
-CollectionManager.instance.success = (collection, count) => {
-  //...
+CollectionManager.instance.success = (collection, successCount) => {
+    //...
 }
 ```
 
@@ -174,7 +183,7 @@ Once the cache has been marked as ready you can generate identifiers at any time
 
 ```javascript
 if (ID.instance.isReady){
-  userDoc.push('userId', ID.instance.generate())
+    userDoc.push('userId', ID.instance.generate())
 }
 ```
 
@@ -184,4 +193,13 @@ GUIDs will be generated as a backup should the cache become empty.
 ```javascript
 ID.instance.interval = 4000
 ID.instance.size = 100
+```
+
+## Advanced
+
+The hostname defaults to the BU Analytics server although we can change this if necessary.
+
+```javascript
+API.instance.url = 'http://192.168.0.x'
+API.instance.path = '/api/v1'
 ```
