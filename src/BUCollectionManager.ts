@@ -38,7 +38,15 @@ export class BUCollectionManager {
     }
     
     //Convenience method for adding a document to a collection and creating the collection if non-existant
-    push(collection: string, document: BUDocument){
+    push(collection: string, document: BUDocument | Object){
+        
+        //Create document if object given
+        let data
+        if (document instanceof Object){
+	        document = new BUDocument(data)
+        }else{
+	        data = document
+        }
         
         //Check whether document exists and create
         if (!Object.keys(this.collections).includes(name)){
@@ -46,7 +54,7 @@ export class BUCollectionManager {
         }
         
         //Add document to collection
-        this.collections[collection].push(document)
+        this.collections[collection].push(data)
     }
     
     //Push documents in all collections to backend server
