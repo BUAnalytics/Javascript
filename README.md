@@ -60,7 +60,8 @@ const userDoc = new Document()
 
 ## Authentication
 
-To authenticate with the backend you must first create an access key through the web management interface. Then pass these details into the api singleton instance.
+To authenticate with the backend you must first create an access key through the web management interface.
+Then pass these details into the api singleton instance.
 
 ```javascript
 API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a1fa1d32b07133e3908923d4bd8c7258e384b5e5dfb91ec0')
@@ -68,7 +69,7 @@ API.instance.auth = new AccessKey('5950ce44326970000ca959be', 'de35d3ec10d97667a
 
 ## Getting Started
 
-You can use the convenience method to quickly add a document to a collection which will be created if needed.
+You can use the convenience method to quickly add a document to a collection which will be created and uploaded automatically.
 
 ```javascript
 CollectionManager.instance.push('Users', {
